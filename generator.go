@@ -11,7 +11,7 @@ func generateFirstThreeRows() []int{
   field := make([]int, 81)
   randRow := make([]int, 81)
 
-	for curFieldRow := 0; curFieldRow <= 27; curFieldRow += 9 {
+	for curFieldRow := 0; curFieldRow < 27; curFieldRow += 9 {
 		for {
       isBad := false
 			randRow = getRandomRow()
