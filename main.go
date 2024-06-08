@@ -1,11 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 
 func main(){
   field := generate()
   fmt.Println("")
-  _ =  getUserField(field, 10)
+  _ =  getUserField(field, 27)
 }
+
 

@@ -11,21 +11,22 @@ const (
 
 func printField(field []int) {
 	for i, el := range field {
-		
-    if i%9 == 0 {
+
+		if i%9 == 0 {
 			fmt.Printf("\n")
 		}
 
-    if (i % 3 == 0) && ((i % 9) != 0) {
-      fmt.Printf("|")
-    }
-    if el == 0{
-		  fmt.Printf(" · ")
-    }else{
-		  fmt.Printf(" %d ", el)
-    }
-    if (i == 26) || (i == 53){
-      fmt.Printf("\n---------+---------+--------")
-    }
+		if (i%3 == 0) && ((i % 9) != 0) {
+			fmt.Printf("|")
+		}
+		if el == 0 {
+			fmt.Printf(" · ")
+		} else {
+			fmt.Printf(" %d ", el)
+		}
+		if (i == 26) || (i == 53) {
+			fmt.Printf("\n---------+---------+--------")
+		}
 	}
+	fmt.Println("")
 }
