@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 )
 
@@ -24,41 +23,80 @@ func getNeighboursMap(field, row []int, index int) map[int]bool {
 	return neighbours
 }
 
-func getValidNumber(field, unfinishedRow []int, curCell, curFieldRow, counterOfIterations int)int{
-  var num int
+var iterCount int
+var rowIter int
+
+func getValidNumber(field, unfinishedRow []int, curCell, curFieldRow int) int {
+	var num int
 	neighbours := getNeighboursMap(field, unfinishedRow, curCell)
-  for{
+	for {
 		num = rand.Intn(9) + 1
 
 		if neighbours[num] {
+			iterCount++
+			if iterCount > 100 {
+				return 0
+			}
 			continue
 		}
 
 		if !(checkValidZone(field, curFieldRow, curCell%9, num)) {
-			fmt.Println("unfinished row", unfinishedRow, "cucurFieldRow", curFieldRow, "culcurCell%9", curCell%9, "num", num, "nuigh", neighbours)
+			//fmt.Println("unfinished row", unfinishedRow, "cucurFieldRow", curFieldRow, "culcurCell%9", curCell%9, "num", num, "nuigh", neighbours)
+			iterCount++
+			if iterCount > 100 {
+				rowIter++
+				return 0
+			}
 			continue
 		}
-    break
-  }
-  return num
+		break
+	}
+	return num
 }
 
 func generate() []int {
-	field := generateFirstThreeRows()
-	curFieldRow := 27
 
+ABORT_FIELD:
+	field := generateFirstThreeRows()
+
+	rowIter = 0
+	aborted := false
+	curFieldRow := 27
 	for curFieldRow < 81 {
+
+	ABORT_ROW:
+		if aborted {
+			if curFieldRow > 27 {
+				for i := curFieldRow; i < curFieldRow+9; i++ {
+					field[i] = 0
+				}
+				curFieldRow -= 9
+			} else {
+				curFieldRow = 27
+			}
+		}
+
+		aborted = false
 		randRow := make([]int, 9)
 		for curCell := curFieldRow; curCell < curFieldRow+9; curCell++ {
-      conterOfIterations := 0
-      num := getValidNumber(field, randRow, curCell, curFieldRow, counterOfIterations)
+			num := getValidNumber(field, randRow, curCell, curFieldRow)
+			if num == 0 {
+
+				if rowIter > 50 {
+					goto ABORT_FIELD
+				}
+				//fmt.Println("ABORTING ROW", curFieldRow)
+				aborted = true
+				goto ABORT_ROW
+
+			}
 			randRow[curCell%9] = num
 		}
 
 		for row := range randRow {
 			field[curFieldRow+row] = randRow[row]
 		}
-
+		iterCount = 0
 		curFieldRow += 9
 	}
 	printField(field)
@@ -92,7 +130,6 @@ func generateFirstThreeRows() []int {
 			break
 		}
 	}
-	printField(field)
 	return field
 }
 
@@ -119,6 +156,9 @@ func checkValidColumn(field []int, column, value int) bool {
 func checkValidZone(field []int, row, column, value int) bool {
 
 	cellFirstRow, cellFirstCoulumn := getFirstInZone(row, column)
+	if cellFirstRow == row {
+		return true
+	}
 	currCell := cellFirstRow + cellFirstCoulumn
 	lastZoneCell := (cellFirstRow + 2*9) + (cellFirstCoulumn + 2)
 	for currCell < (lastZoneCell) {
@@ -130,7 +170,7 @@ func checkValidZone(field []int, row, column, value int) bool {
 		for j := 0; j < 3; j++ {
 			cellInColumn := currCell + j
 			if field[cellInColumn] == value {
-				fmt.Println("поле от", cellInColumn, "=", field[cellInColumn], "значение", value)
+				//fmt.Println("поле от", cellInColumn, "=", field[cellInColumn], "значение", value)
 				return false
 			}
 		}
