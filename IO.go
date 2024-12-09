@@ -1,11 +1,11 @@
-package main;
+package main
 
-func chooseDifficulty(){
-  for{
-    //TODO
-  }
+func chooseDifficulty() {
+	for {
+		//TODO
+	}
 }
 
-func readUserInput(){
-  //TODO implement reading from the buttons
+func readUserInput() {
+	//TODO implement reading from the buttons
 }
