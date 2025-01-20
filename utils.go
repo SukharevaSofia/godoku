@@ -19,7 +19,7 @@ type field struct {
   Id int64
 	Save_name string
 	Is_solved bool
-  values []int
+  values [81]int
 }
 
 func printField(field []int) {

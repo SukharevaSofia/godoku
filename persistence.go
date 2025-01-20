@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -13,14 +12,20 @@ import (
 func db_manager() {
 	fmt.Println("opening the db...")
 	db, err := sql.Open("sqlite3", "godoku.db")
+	if err != nil {
+		log.Fatal(err)
+    panic(err)
+	}
 
 	var version string
 	err = db.QueryRow("SELECT SQLITE_VERSION()").Scan(&version)
 	if err != nil {
 		log.Fatal(err)
+    panic(err)
 	}
+  defer db.Close()
 
-	fmt.Println(version)
+	log.Println(version)
 	// Create tables for fields and rows
 	// TODO: add more constraints
 	const create_fields_query = `CREATE TABLE IF NOT EXISTS fields
@@ -36,7 +41,7 @@ func db_manager() {
 
 	// Create
 	const create_rows_query = `CREATE TABLE IF NOT EXISTS rows
-		(field_id INTEGER FOREIGT KEY NOT NULL, 
+		(field_id INTEGER NOT NULL, 
 		row_id INTEGER NOT NULL, 
 		val_1 INTEGER,
 		val_2 INTEGER,
@@ -60,6 +65,12 @@ func db_manager() {
 func add_field(field []int, save_name string, is_solved bool) int64 {
 	// opening the db
 	db, err := sql.Open("sqlite3", "godoku.db")
+	if err != nil {
+		log.Fatal(err)
+		panic(err)
+	}
+  defer db.Close()
+
 	fmt.Println("adding to the db...")
 
 	// adding the info into fields table
@@ -102,11 +113,11 @@ func add_field(field []int, save_name string, is_solved bool) int64 {
 
 func show_fields() {
 	db, err := sql.Open("sqlite3", "godoku.db")
-	var version string
-	err = db.QueryRow("SELECT SQLITE_VERSION()").Scan(&version)
 	if err != nil {
 		log.Fatal(err)
+		panic(err)
 	}
+  defer db.Close()
 
 	fields, err := db.Query("SELECT id, save_name, is_solved FROM fields")
 	if err != nil {
@@ -128,15 +139,20 @@ func show_fields() {
 		}
 
 		var temp string
-		var row_id int
+    row_num := 0
 		for rows.Next() {
-
-			rows.Scan(&temp)
-			row_id, _ = strconv.Atoi(temp)
-			for i := 0; i < 9; i++ {
-				rows.Scan(&temp_field.values[i+9*row_id])
-			}
+			rows.Scan(&temp, &temp, 
+        &temp_field.values[0 + 9*row_num],
+        &temp_field.values[1 + 9*row_num],
+        &temp_field.values[2 + 9*row_num],
+        &temp_field.values[3 + 9*row_num],
+        &temp_field.values[4 + 9*row_num],
+        &temp_field.values[5 + 9*row_num],
+        &temp_field.values[6 + 9*row_num],
+        &temp_field.values[7 + 9*row_num],
+        &temp_field.values[8 + 9*row_num])
+        row_num++
 		}
-		printField(temp_field.values)
+    printField(temp_field.values[:])
 	}
 }
