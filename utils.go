@@ -9,12 +9,17 @@ const (
 		"1) Easy\n" +
 		"2) Medium\n" +
 		"3) Hard\n"
+  ACTION_CHOISE = "what should we do?\n"+
+      "1: generate a field \n"+
+      "2: generate & save the field\n"+
+      "3: show saved fields"
 )
 
 type field struct {
-	Id        int64
+  Id int64
 	Save_name string
 	Is_solved bool
+  values []int
 }
 
 func printField(field []int) {
