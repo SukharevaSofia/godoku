@@ -4,7 +4,7 @@ import (
 	"math/rand"
 )
 
-func getNeighboursMap(field, row []int, index int) map[int]bool {
+func getNeighboursMap(field [81]int, row []int, index int) map[int]bool {
 	neighbours := make(map[int]bool, 10)
 
 	var value int
@@ -26,7 +26,7 @@ func getNeighboursMap(field, row []int, index int) map[int]bool {
 var iterCount int
 var rowIter int
 
-func getValidNumber(field, unfinishedRow []int, curCell, curFieldRow int) int {
+func getValidNumber(field [81]int, unfinishedRow []int, curCell, curFieldRow int) int {
 	var num int
 	neighbours := getNeighboursMap(field, unfinishedRow, curCell)
 	for {
@@ -54,7 +54,7 @@ func getValidNumber(field, unfinishedRow []int, curCell, curFieldRow int) int {
 	return num
 }
 
-func generate() []int {
+func generate() [81]int {
 
 ABORT_FIELD:
 	field := generateFirstThreeRows()
@@ -99,14 +99,13 @@ ABORT_FIELD:
 		iterCount = 0
 		curFieldRow += 9
 	}
-	printField(field)
 	return field
 }
 
-func generateFirstThreeRows() []int {
+func generateFirstThreeRows() [81]int {
 
-	field := make([]int, 81)
-	randRow := make([]int, 9)
+	var field [81]int
+	var randRow []int
 
 	for curFieldRow := 0; curFieldRow < 27; curFieldRow += 9 {
 		for {
@@ -142,7 +141,7 @@ func checkValidRow(row []int, value int) bool {
 	return true
 }
 
-func checkValidColumn(field []int, column, value int) bool {
+func checkValidColumn(field [81]int, column, value int) bool {
 
 	for curCell := column; curCell < 81; curCell += 9 {
 		if field[curCell] == value {
@@ -153,7 +152,7 @@ func checkValidColumn(field []int, column, value int) bool {
 	return true
 }
 
-func checkValidZone(field []int, row, column, value int) bool {
+func checkValidZone(field [81]int, row, column, value int) bool {
 
 	cellFirstRow, cellFirstCoulumn := getFirstInZone(row, column)
 	if cellFirstRow == row {
@@ -180,7 +179,7 @@ func checkValidZone(field []int, row, column, value int) bool {
 	return true
 }
 
-func checkValid(field []int, row, column, value int) bool {
+func checkValid(field [81]int, row, column, value int) bool {
 	return checkValidColumn(field, column, value) && checkValidZone(field, row, column, value)
 }
 

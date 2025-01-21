@@ -4,30 +4,29 @@ import (
 	"math/rand"
 )
 
-func getUserField(fullField []int, hints int) []int {
+func obscure_field(full_field [81]int, hints int) ([81]int, [81]int) {
 
-	hintsIndexes := getIndexesToHide(hints)
+	hints_indexes := get_hints_indexes(hints)
 
-	userField := make([]int, 81)
-	for i := range fullField {
+	var obscured_field [81]int
+	for i := range full_field {
 
 		//means the index is that of a hint's
-		if hintsIndexes[i] {
-			userField[i] = fullField[i]
+		if hints_indexes[i] != 0 {
+			obscured_field[i] = full_field[i]
 		} else {
-			userField[i] = 0
+			obscured_field[i] = 0
 		}
 	}
-	printField(userField)
-	return userField
+	return hints_indexes, obscured_field
 }
 
-func getIndexesToHide(hints int) map[int]bool {
-	randomIndexes := rand.Perm(81)
-	indexesMap := make(map[int]bool)
+func get_hints_indexes(hints int) [81]int {
+	random_indexes := rand.Perm(81)
+	var indexes_map [81]int
 	for i := 0; i < hints; i++ {
-		index := randomIndexes[i]
-		indexesMap[index] = true
+		index := random_indexes[i]
+		indexes_map[index] = 1
 	}
-	return indexesMap
+	return indexes_map
 }
