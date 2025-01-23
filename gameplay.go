@@ -130,9 +130,14 @@ func we_have_a_winner(full_field, local_field, hints_loc [81]int) {
 	clear()
 	print_field(full_field)
 	fmt.Printf("\n \033[93m %s \033[m", WINNER)
-	fmt.Println("\nPress any button to continue.")
-	var x []byte
-	os.Stdin.Read(x)
-	exec.Command("stty", "-F", "/dev/tty", "echo").Run()
+	fmt.Println("\nPress 'enter' to continue.")
+	var b []byte = make([]byte, 3)
+  for{
+	  os.Stdin.Read(b)
+    if b[0] == 10{
+      break
+    }
+  }
+  exec.Command("stty", "-F", "/dev/tty", "echo").Run()
 	save_or_not(full_field, local_field, hints_loc, true)
 }
