@@ -171,7 +171,8 @@ func show_fields(show_obscured bool) {
 
 	for fields.Next() {
 		fields.Scan(&temp_field.Id, &temp_field.Save_name, &temp_field.Is_solved)
-		fmt.Printf("-|-|-|-|-|-|-\n field id: %d, name: %s, solved? %v\n",
+    fmt.Println("-----------------------------")
+		fmt.Printf("field id: %d, name: %s, solved? %v\n",
 			temp_field.Id, temp_field.Save_name, temp_field.Is_solved)
 
 		rows, err := db.Query("SELECT * FROM rows WHERE field_id = ?", temp_field.Id)

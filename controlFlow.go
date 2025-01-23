@@ -6,12 +6,13 @@ import (
 	"os"
 	"strconv"
 )
-func clear(){
-  fmt.Println(CLEAN_TERMINAL)
+
+func clear() {
+	fmt.Println(CLEAN_TERMINAL)
 }
 
 func control_flow() {
-  clear()
+	clear()
 	var input_val string
 
 	// generating or printing fields
@@ -21,74 +22,74 @@ func control_flow() {
 		switch_val, _ := strconv.Atoi(input_val)
 
 		switch switch_val {
-    // user decided to gen field
+		// user decided to gen field
 		case 1:
-      hints := choose_difficulty()
+			hints := choose_difficulty()
 			fmt.Println("generating...")
 			field := generate()
 			fmt.Println("Generahion completed!")
 			play_or_not(field, hints)
 
-    //user decided to show fields
+			// user decided to show fields
 		case 2:
-      is_obscured := choose_showing()
+			is_obscured := choose_showing()
 			show_fields(is_obscured)
 			log.Println("terminating after showing fields")
 			os.Exit(0)
 
 		default:
-			fmt.Println(BAD_INPUT)
+			bad_input()
 		}
 	}
 }
 
-func choose_showing() bool{
-  clear()
+func choose_showing() bool {
+	clear()
 	var tmp string
 	for {
 		fmt.Print(SHOW_FULL_OR_HINT)
 		fmt.Scan(&tmp)
 		is_obsc, _ := strconv.Atoi(tmp)
 		switch is_obsc {
-    //show fields with hidden values
+		// show fields with hidden values
 		case 1:
 			return true
-      //show fields as is without hiding
+			// show fields as is without hiding
 		case 2:
 			return false
 		default:
-			fmt.Println(BAD_INPUT)
+			bad_input()
 		}
 	}
 }
 
 func choose_difficulty() int {
-  clear()
+	clear()
 	var tmp string
 	for {
 		fmt.Print(DIFFICULTY_CHOICE)
 		fmt.Scan(&tmp)
 		difficulty, _ := strconv.Atoi(tmp)
 		switch difficulty {
-    //easy
+		// easy
 		case 1:
-			return 60
-    //medium
+			return 79
+			// medium
 		case 2:
 			return 40
-    //hard
+			// hard
 		case 3:
 			return 27
 		default:
-			fmt.Println(BAD_INPUT)
+			bad_input()
 		}
 	}
 }
 
 func play_or_not(full_field [81]int, hints int) {
-  clear()
-  hints_loc, play_field := obscure_field(full_field, hints)
-  print_field(play_field)
+	clear()
+	hints_loc, play_field := obscure_field(full_field, hints)
+	print_field(play_field)
 
 	var input_val string
 	gotta_continue := true
@@ -98,52 +99,45 @@ func play_or_not(full_field [81]int, hints int) {
 		switch_val, _ := strconv.Atoi(input_val)
 
 		switch switch_val {
-    //user decided to play
+		// user decided to play
 		case 1:
-		  fmt.Println("STAB! NO GAMEPLAY YET!")
-      os.Exit(0)
-    //user decided not to play
+			game_controller(full_field, play_field, hints_loc)
+			// user decided not to play
 		case 2:
-      save_or_not(full_field, play_field, hints_loc)
+			save_or_not(full_field, play_field, hints_loc, false)
 		default:
-			fmt.Println(BAD_INPUT)
+			bad_input()
 		}
 	}
 }
 
-func save_or_not(full_field, play_field, hints_loc [81]int) {
-  clear()
+func save_or_not(full_field, play_field, hints_loc [81]int, is_solved bool) {
+	clear()
 	var input_val string
 
 	for {
-    print_field(play_field)
+		print_field(play_field)
 		fmt.Print(SAVE_CHOICE)
 		fmt.Scan(&input_val)
 		switch_val, _ := strconv.Atoi(input_val)
 		switch switch_val {
-    // to save the field
+		// to save the field
 		case 1:
 			db_manager()
-      fmt.Print("\nenter name of the save:\n > ")
+			fmt.Print("\nenter name of the save:\n > ")
 			var name string
 			fmt.Scan(&name)
-      full_id, play_id, _ := save_field(full_field, play_field, hints_loc, name, false)
-      fmt.Printf("\nID of the saved field = %d. To see the answer look for field # %d\n", play_id, full_id)
+			full_id, play_id, _ := save_field(full_field, play_field, hints_loc, name, is_solved)
+			fmt.Printf("\nID of the saved field = %d. To see the answer look for field # %d\n", play_id, full_id)
 			log.Println("terminating the programm after saving")
 			os.Exit(0)
-    //abandon the generated field, for it to be forever gone in the flow of time...
+			// abandon the generated field, for it to be forever gone in the flow of time...
 		case 2:
 			log.Println("terminating the programm, no saving")
 			os.Exit(0)
 		default:
-			fmt.Println(BAD_INPUT)
+			bad_input()
 		}
 	}
 }
 
-// returns the number of hints
-func gameplay(full_field, play_field []int, hints_locs map[int]bool){}
-
-func readUserInput() {
-	// TODO implement reading from the buttons
-}

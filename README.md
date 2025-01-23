@@ -6,13 +6,14 @@ Godoku is a CLI golang implementation of the famous sudoku puzzle
 
 As of now, Godoku can do the following:
 
-- Generate a valid game field
-- Hide cells on the said field, so you can enjoy solving the puzzle
+- Generate a valid game field of a choosen difficulty
+- Fields are playable
+- Saving generated fields and your progress
+- Showing all the saved fields
 
 ## What will it do in the future?
 
-The current roadmap contents of 3 steps:
+The current roadmap contents of the following steps:
 
-1. Storing previously generated field in SQLite3
+1. Loading a saved field to play on it
 2. Perfomance and code improvments for better field generation
-3. Actually playable version of the game with the ability to save your progress

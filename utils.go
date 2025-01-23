@@ -5,31 +5,70 @@ import (
 )
 
 const (
-	DIFFICULTY_CHOICE = "\nPlease, choose the level of difficulty:\n" +
-		"1: Easy\n" +
-		"2: Medium\n" +
-		"3: Hard\n" +
-		"> "
+	DIFFICULTY_CHOICE = 
+`.-------------------------------------.
+| Please, choose the level            |
+| of difficulty:                      |
+| 1: easy                             |
+| 2: medium                           |
+| 3: hard                             |
+'-------------------------------------'
+> `
 
-	GEN_OR_SHOW = "\n what should we do?\n" +
-		"1: generate a field \n" +
-		"2: show saved fields\n" +
-		"> "
+	GEN_OR_SHOW = 
+`.-------------------------------------.
+| Welcome to godoku!                  |
+| What would you want to do?          |
+| 1: generate a field                 |
+| 2: show saved fields                |
+'-------------------------------------'
+> `
 
-	SHOW_FULL_OR_HINT = "\n Show fields with obscured values?\n" +
-		"1: yes please \n" +
-		"2: no, show all the values\n" +
-		"> "
 
-	PLAY_CHOICE = "\n Wanna play on the generated field?\n" +
-		"1: yes \n" +
-		"2: no\n" +
-		"> "
+	SHOW_FULL_OR_HINT = 
+`.-------------------------------------.
+| Show fields with obscured values?   |
+| 1: yes please                       |
+| 2: no, show all the values          |
+'-------------------------------------'
+> `
 
-	SAVE_CHOICE = "\n Wanna save the field?\n" +
-		"1: yes \n" +
-		"2: no\n" +
-		"> "
+	PLAY_CHOICE = 
+`.-------------------------------------.
+| Wanna play the generated field?     |
+| 1: yes                              |
+| 2: no                               |
+'-------------------------------------'
+> `
+
+	SAVE_CHOICE = 
+`.-------------------------------------.
+| Save the field?                     |
+| 1: yes                              |
+| 2: no                               |
+'-------------------------------------'
+> `
+
+	WINNER = 
+  `
+ / \------------------------------------, 
+ \_,|                                   | 
+    |    Congratulations! You've won!   |
+    |    Press any button to continue.  |
+    |  ,----------------------------------
+    \_/_________________________________/ `
+
+	INSTRUCTIONS = 
+`
+
+.--------------------HOW-TO-PLAY--------------------.
+| - move around using arrows ←↑→↓                   |
+| - to change a value in a cell, press "enter" and  |
+| type the desired value for that cell.             |
+| - to delete a value, put 0 in a cell.             |
+| - to finish and save session, press "c".          |
+'---------------------------------------------------'
+  `
 
 	FIELDS_TABLE = "CREATE TABLE IF NOT EXISTS fields" +
 		"(id INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
@@ -68,6 +107,10 @@ type field struct {
 	hints_indexes     map[int]bool
 }
 
+func bad_input() {
+	fmt.Println(BAD_INPUT)
+}
+
 func print_field(field [81]int) {
 	for i, el := range field {
 
@@ -88,4 +131,49 @@ func print_field(field [81]int) {
 		}
 	}
 	fmt.Println("")
+}
+
+func print_field_with_coursor(field [81]int, cursor int) {
+	var is_choosen, is_lit_col, is_lit_row bool
+
+	lit_column := cursor % 9
+	lit_row := cursor / 9
+	for i, el := range field {
+		is_choosen = (i == cursor)
+		is_lit_col = (i%9 == lit_column)
+		is_lit_row = (i/9 == lit_row)
+
+		if i%9 == 0 {
+			fmt.Print("\n")
+		}
+
+		if (i%3 == 0) && ((i % 9) != 0) {
+			fmt.Print("|")
+		}
+		if el == 0 {
+			if is_choosen {
+				fmt.Print("\033[45m . \033[m")
+			} else if is_lit_row || is_lit_col {
+				fmt.Print("\033[35m . \033[m")
+			} else {
+				fmt.Print("\033[0m . \033[m")
+			}
+		} else {
+			if is_choosen {
+				fmt.Printf("\033[45m %d \033[m", el)
+			} else if is_lit_row || is_lit_col {
+				fmt.Printf("\033[35m %d \033[m", el)
+			} else {
+				fmt.Printf("\033[0m %d \033[m", el)
+			}
+		}
+		if (i == 26) || (i == 53) {
+			fmt.Print("\n---------+---------+--------")
+		}
+	}
+	fmt.Println("")
+}
+
+func equal_fields(input_field, correct_field [81]int) bool {
+	return input_field == correct_field
 }
